@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Table, Card, Space, Tag, Modal, Button, Form } from "antd";
 import { ColumnsType } from "antd/es/table/interface";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleFilled,
+} from "@ant-design/icons";
 import { AddTicket } from "../AddTicket/AddTicket";
 import { Ticket } from "../../Interface";
 import dayjs from "dayjs";
@@ -16,6 +20,7 @@ export const ListTickets: React.FC<Props> = (props: Props) => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [curRecord, setCurRecord] = useState<Ticket>();
+  const { confirm } = Modal;
 
   const columns: ColumnsType<Ticket> = [
     {
@@ -58,7 +63,7 @@ export const ListTickets: React.FC<Props> = (props: Props) => {
             />
             <DeleteOutlined
               onClick={() => {
-                props.delete(record);
+                showConfirm(record);
               }}
             />
           </Space>
@@ -66,6 +71,17 @@ export const ListTickets: React.FC<Props> = (props: Props) => {
       },
     },
   ];
+
+  const showConfirm = (record: Ticket) => {
+    confirm({
+      title: "Do you actually want to delete this items?",
+      icon: <ExclamationCircleFilled />,
+      onOk() {
+        props.delete(record);
+      },
+      onCancel() {},
+    });
+  };
 
   const showModal = (record: Ticket) => {
     record.date = dayjs(dayjs(record.date).format("DD-MMMM-YYYY"));
